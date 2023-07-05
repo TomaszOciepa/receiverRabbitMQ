@@ -1,11 +1,10 @@
 package com.mango.receiver;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import notification.Notification;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
 
 
 @RestController
@@ -27,8 +26,18 @@ public class ReceiverMessageController {
         }
     }
 
-    @RabbitListener(queues = "stau")
-    public void listenerMessage(String message){
-        System.out.println(LocalDateTime.now() + " "+ message);
+    @GetMapping("/notification")
+    public ResponseEntity<Notification> receiveNotification(){
+        Object notification = rabbitTemplate.receiveAndConvert("stau");
+        if(notification instanceof Notification){
+            return ResponseEntity.ok((Notification)notification);
+        }else {
+            return ResponseEntity.noContent().build();
+        }
     }
+
+//    @RabbitListener(queues = "stau")
+//    public void listenerMessage(String message){
+//        System.out.println(LocalDateTime.now() + " "+ message);
+//    }
 }
