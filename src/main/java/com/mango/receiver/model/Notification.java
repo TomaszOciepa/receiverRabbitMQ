@@ -1,8 +1,6 @@
-package notification;
+package com.mango.receiver.model;
 
-import java.io.Serializable;
-
-public class Notification implements Serializable {
+public class Notification {
 
     private String email;
     private String title;
@@ -10,7 +8,6 @@ public class Notification implements Serializable {
 
     public Notification() {
     }
-
 
     public String getEmail() {
         return email;

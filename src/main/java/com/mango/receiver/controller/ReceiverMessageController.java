@@ -1,13 +1,12 @@
-package com.mango.receiver;
+package com.mango.receiver.controller;
 
-import notification.Notification;
+import com.mango.receiver.model.Notification;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
 
 
 @RestController
@@ -31,9 +30,10 @@ public class ReceiverMessageController {
 
     @GetMapping("/notification")
     public ResponseEntity<Notification> receiveNotification(){
-        Object notification = rabbitTemplate.receiveAndConvert("stau");
-        if(notification instanceof Notification){
-            return ResponseEntity.ok((Notification)notification);
+        Notification notification = rabbitTemplate
+                .receiveAndConvert("stau", ParameterizedTypeReference.forType(Notification.class));
+        if(notification != null){
+            return ResponseEntity.ok(notification);
         }else {
             return ResponseEntity.noContent().build();
         }
